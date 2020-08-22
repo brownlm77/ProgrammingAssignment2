@@ -1,24 +1,63 @@
-# Write the following functions:
-
-#  makeCacheMatrix: 
+#  cachematrix.R
+#
+#  Author:  Lawrence Brown
+#  Date:    22 Aug 2020
+#
+#  Fucnction:  
+#
+#  makeCacheMatrix 
+#  
 #  This function creates a special "matrix" object that can 
 #  cache its inverse.
-
-
-## Write a short comment describing this function
+#
+#  This function assumes the input matrix is square and has
+#  an inverse.  No error checking is made on these two 
+#  stated properties. 
+#
+#  Input:  x of type matrix
+#  
+#  Returns:  A special matrix object (list) that can store the 
+#            inverse of the matrix. 
+#
+#  Details:
+# 
+#  The returned object is a list containing four named 
+#  elements that are functions.  Each list name and functions
+#  are summarized below
+#
+#  set(x)  Store the matrix x
+# 
+#  get()   Return the stored matrix
+#
+#  setsolve(x)  Sets the inverse of the matrix x
+#
+#  getsolve()   Returns the stored inverse matrix
+#
 
 makeCacheMatrix <- function(x = matrix()) {
-  b <- NULL
+  s <- NULL
+  
+  # Assign value y into parent environment variable x
+  # and create parent environment variable y will value NULL
   set <- function(y) {
     x <<- y
-    b <<- NULL
+    s <<- NULL
   }
+  
+  # Return the stored matrix
   get <- function() x
-  setmean <- function(avar) b <<- avar
-  getmean <- function() b
+  
+  # Stored the argument of setsolve (inverse of matrix) 
+  # into the parent environment variable s
+  setsolve <- function(i) s <<- i
+  
+  # Return the inverse matrix stored in the parent environment 
+  getsolve <- function() s
+  
+  # Return a list contain for named functions above
   list(set = set, get = get,
-       setmean = setmean,
-       getmean = getmean)
+       setsolve = setsolve,
+       getsolve = getsolve)
   
 }
 
@@ -34,14 +73,14 @@ makeCacheMatrix <- function(x = matrix()) {
 ## Write a short comment describing this function
 
 cacheSolve <- function(x, ...) {
-  m <- x$getmean()
+  m <- x$getsolve()
   if(!is.null(m)) {
     message("getting cached inverse")
     return(m)
   }
   data <- x$get()
   m <- solve(data, ...)
-  x$setmean(m)
+  x$setsolve(m)
   m
 }
 
