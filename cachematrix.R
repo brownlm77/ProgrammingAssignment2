@@ -14,7 +14,7 @@
 #  an inverse.  No error checking is made on these two 
 #  stated properties. 
 #
-#  Input:  x of type matrix
+#  Input:   x of type matrix
 #  
 #  Returns:  A special matrix object (list) that can store the 
 #            inverse of the matrix. 
@@ -22,8 +22,8 @@
 #  Details:
 # 
 #  The returned object is a list containing four named 
-#  elements that are functions.  Each list name and functions
-#  are summarized below
+#  elements that are functions.  Each list element and 
+#  corresponding function is summarized below
 #
 #  set(x)  Store the matrix x
 # 
@@ -62,25 +62,72 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-
-#  cacheSolve: 
+#  cacheSolve
+#
 #  This function computes the inverse of the special 
 #  "matrix" returned by makeCacheMatrix above. If the inverse 
 #  has already been calculated (and the matrix has not changed), 
-#  then the cachesolve should retrieve the inverse from the cache.
-
-
-## Write a short comment describing this function
+#  then the cacheSolve should retrieve the inverse from the cache.
+#
+#  No error checking is performed on the matrix.  Assumption is that 
+#  the matrix is square and invertable. 
+# 
+#  Input:   x of type makeCacheMatrix
+#  
+#  Returns:  Inverse of x
+#
+#  Details:  Uses the solve function 
+#
 
 cacheSolve <- function(x, ...) {
-  m <- x$getsolve()
-  if(!is.null(m)) {
+  # Get inverse matrix
+  s <- x$getsolve()
+  
+  # Check if inverse matrix is cached, and, if true, 
+  # return the matrix
+  if(!is.null(s)) {
     message("getting cached inverse")
-    return(m)
+    return(s)
   }
+  
+  # In no inverse matrix found, calculate inverse and cache 
+  # value. 
   data <- x$get()
-  m <- solve(data, ...)
-  x$setsolve(m)
-  m
+  s <- solve(data, ...)
+  x$setsolve(s)
+  s
+}
+
+
+# Code to unit test makeCacheMatrix and cacheSovle 
+
+unitTest <- function() {
+  
+  # Create 3 x 3 matrix and test makeCacheMatrix and cacheSolve
+  
+  a <- matrix(c(3, 5, 2, 5, 0, -1, 4, 9, -3), nrow = 3, ncol = 3)
+  message("Matrix a:")
+  print(a)
+  
+  aCacheMatrix <- makeCacheMatrix()
+  aCacheMatrix$set(a)
+  cacheSolve(aCacheMatrix)
+  message("Inverse Matrix a:")
+  print(aCacheMatrix$getsolve())
+  cacheSolve(aCacheMatrix)
+  
+  # Create 4 x 4 matrix and test makeCacheMatrix and cacheSolve
+  
+  b <- matrix( c(1, 2, 5, -1,
+                 1, 0, -4, 4,
+                 4, 7,  2, 1,
+                 4, 1, -2, 5), nrow = 4, ncol = 4)
+  message("Matrix b:")
+  print(b) 
+  bCacheMatrix <- makeCacheMatrix(b)
+  cacheSolve(bCacheMatrix)
+  message("Inverse Matrix b:")
+  print(bCacheMatrix$getsolve())
+  cacheSolve(bCacheMatrix)  
 }
 
